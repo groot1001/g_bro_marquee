@@ -12,12 +12,13 @@
 |--	|--	|--	|--	|--|--|
 |broadcastType|滚动类型|String|text|mould/text|无|
 |direction|滚动方向|String|left|top/bottom/left/right|无|
-|view_height|滚动区域可视高度|Number|400|--|单位:rpx; direction：left和right且broadcastType为"text"情况下不可用|
+|viewHeight|滚动区域可视高度|Number|400|--|单位:rpx; direction：left和right且broadcastType为"text"情况下不可用|
 |broadcastStyle|滚动区域样式|Object|{speed: 30,font_size: "28",text_color: "#333",back_color: "red",}|--|mould模式下根据需求只传：{speed：***}即可|
 |broadcastData|文字滚动数据|Array|--|--|text模式下可用|
 |broadcastIconIsDisplay|文字滚动图标是否显示|Boolean|false|true/false|text模式下方向为left/right可用|
 |broadcast_tit|文字滚动标题|String|今日热点|--|text模式下方向为left/right可用|
 |touchEvent|指尖触摸暂停动画|Boolean|false|true/false|--|
+|@changeEvent|每条数据的点击事件|EventHandle|--|--|text模式下方向为left/right可用;event：{index,msg}|
 
 
 |参数|说明|
@@ -29,13 +30,11 @@
 js:
 ``` javascript
     <script>
-    	import gbroMarquee from '../../components/GBroMarquee/marquee.vue'
+    	import gbro-marquee from '../../components/gbro-marquee/marquee.vue'
     	export default {
     		data() {
     			return {
-    				broadcastData: ['秒秒天天答复是短发分公司噶阿飞嘎斯在', '分分答复是短发分公司噶阿飞嘎斯在', '时时答复是短发分公司噶阿飞嘎斯在', '天天答复是短发分公司噶阿飞嘎斯在',
-    					'月月答复是短发分公司噶阿飞嘎斯在', '年年答复是短发分公司噶阿飞嘎斯在'
-    				],
+    				broadcastData: [],
     				broadcastStyle: {
     					speed: 3, //每秒3个字
     					font_size: "32", //字体大小(rpx)
@@ -46,8 +45,21 @@ js:
     			}
     		},
     		components: {
-    			gbroMarquee
+    			gbro-marquee
     		},
+			onLoad() {
+				let that = this;
+				setTimeout(() => {//模拟请求
+					that.broadcastData = ['秒秒天天答复是短发分公司噶阿飞嘎斯在', '分分答复是短发分公司噶阿飞嘎斯在', '时时答复是短发分公司噶阿飞嘎斯在', '天天答复是短发分公司噶阿飞嘎斯在',
+    					'月月答复是短发分公司噶阿飞嘎斯在', '年年答复是短发分公司噶阿飞嘎斯在'
+    				]
+				}, 300)
+			},
+			methods: {
+			   testClick(e){
+				   console.log(e)
+			   }
+			}
     	}
     </script>
 ```
@@ -56,7 +68,7 @@ html:(为了兼容小程序在gbro-marquee 标签上加上style="width: 100%")
 ``` html
     <template>
     	<view class="content">
-    		<gbro-marquee broadcastType='text'   direction="left"
+    		<gbro-marquee v-if="broadcastData.length>0" broadcastType='text' @changeEvent='testClick'  direction="left"
     		 :broadcastIconIsDisplay="true" :broadcastData='broadcastData' :broadcastStyle='broadcastStyle' style="width: 100%">
     		</gbro-marquee>
     	</view>
@@ -67,7 +79,7 @@ html:(为了兼容小程序在gbro-marquee 标签上加上style="width: 100%")
 js:
 ``` javascript
     <script>
-    	import gbroMarquee from '../../components/GBroMarquee/marquee.vue'
+    	import gbro-marquee from '../../components/gbro-marquee/marquee.vue'
     	export default {
     		data() {
     			return {
@@ -84,8 +96,9 @@ js:
     			}
     		},
     		components: {
-    			gbroMarquee
-    		},
+    			gbro-marquee
+    		}
+			
     	}
     </script>
 ```
@@ -94,7 +107,7 @@ html:(为了兼容小程序在gbro-marquee 标签上加上style="width: 100%")
 ``` html
     <template>
     	<view class="content">
-    		<gbro-marquee broadcastType='text'   direction="top"
+    		<gbro-marquee broadcastType='text' :viewHeight="200"  direction="top"
     		  :broadcastData='broadcastData' :broadcastStyle='broadcastStyle' style="width: 100%">
     		</gbro-marquee>
     	</view>
@@ -105,7 +118,7 @@ html:(为了兼容小程序在gbro-marquee 标签上加上style="width: 100%")
 js:
 ``` javascript
     <script>
-    	import gbroMarquee from '../../components/GBroMarquee/marquee.vue'
+    	import gbro-marquee from '../../components/gbro-marquee/marquee.vue'
     	export default {
     		data() {
     			return {
@@ -117,7 +130,7 @@ js:
     			}
     		},
     		components: {
-    			gbroMarquee
+    			gbro-marquee
     		},
     	}
     </script>
@@ -127,7 +140,7 @@ html:(为了兼容小程序在gbro-marquee 标签上加上style="width: 100%")
 ``` html
     <template>
     	<view class="content">
-    		<gbro-marquee broadcastType='mould'   direction="left" :broadcastStyle='broadcastStyle' style="width: 100%">
+    		<gbro-marquee broadcastType='mould' :viewHeight="400"  direction="left" :broadcastStyle='broadcastStyle' style="width: 100%">
     		    <view  v-for="(item,ind) in imgdata" :key="ind" class="img_item2">
     		    	<image :src="item" mode=""></image>
     		    </view> 

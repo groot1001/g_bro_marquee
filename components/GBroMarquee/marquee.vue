@@ -9,7 +9,7 @@
 				</view>
 				<view class="boradcast_text_left_rig" :class='[direction=="left"?"marquee_text_left":direction=="right"?"marquee_text_right":"",animation_paused?"animation_pausedcss":""]'
 				 :style="'--marqueeWidth--:'+(-broadcastStylees.width_mal)+'px;--speed--:'+broadcastStylees.time+'s;width:'+broadcastStylees.width_mal+'px;'">
-					<view v-for="(item,index) in broadcastDataes" :key="index" :style="'color:'+broadcastStylees.text_color+';margin-left:'+(index!=0?item.starspos:0)+'px;font-size:'+broadcastStylees.font_size+'rpx;'">
+					<view v-for="(item,index) in broadcastDataes" @click.stop="click_event(index)" :key="index" :style="'color:'+broadcastStylees.text_color+';margin-left:'+(index!=0?item.starspos:0)+'px;font-size:'+broadcastStylees.font_size+'rpx;'">
 						{{item.text}}
 					</view>
 				</view>
@@ -17,7 +17,7 @@
 
 			</view>
 			<view v-if="broadcastType=='mould'" class="mould">
-				<view class="" style="width: 100%;position: relative;overflow: hidden;" :style="'height:'+view_height+'rpx;'">
+				<view class="" style="width: 100%;position: relative;overflow: hidden;" :style="'height:'+viewHeight+'rpx;'">
 					<view class="broadcastTopBtm dsf" :class="[direction=='left'?'broadcastDataTopBtmDatacss_let':direction=='right'?'broadcastDataTopBtmDatacss_rig':'',animation_paused?'animation_pausedcss':'']"
 					 :style="'--scrollWidth--:'+(-scrlloWidth)+'px;--scrollSpeed2--:'+(scrlloWidth)/broadcastStyle.speed+'s;width:'+scrlloWidth*2+'px;'">
 						<view class="bml01" style="display: flex;justify-content: space-between;">
@@ -33,9 +33,9 @@
 		</view>
 
 
-		<view v-if="direction=='top'||direction=='bottom'" class="broadcastTopBtm" :style="'font-size:'+broadcastStyle.font_size+'rpx;color:'+broadcastStyle.text_color+';background:'+broadcastStyle.back_color+';height:'+view_height+'rpx;--scrollHeight--:'+(-broadcastTopBtmHeight/2)+'px;--scrollSpeed--:'+(broadcastTopBtmHeight/2)/broadcastStyle.speed+'s;'">
+		<view v-if="direction=='top'||direction=='bottom'" class="broadcastTopBtm" :style="'font-size:'+broadcastStyle.font_size+'rpx;color:'+broadcastStyle.text_color+';background:'+broadcastStyle.back_color+';height:'+viewHeight+'rpx;--scrollHeight--:'+(-broadcastTopBtmHeight/2)+'px;--scrollSpeed--:'+(broadcastTopBtmHeight/2)/broadcastStyle.speed+'s;'">
 			<view v-if="broadcastType=='text'" :class="[direction=='top'?'broadcastDataTopBtmDatacss_top':direction=='bottom'?'broadcastDataTopBtmDatacss_bottom':'',animation_paused?'animation_pausedcss':'']">
-				<view v-for="(item,index) in broadcastDataTopBtmDataes" :key="index" class="bdbd_item">
+				<view v-for="(item,index) in broadcastDataTopBtmDataes" :key="index" @click.stop="click_event(index>((broadcastDataTopBtmDataes.length/2)-1)?index-(broadcastDataTopBtmDataes.length/2):index)"  class="bdbd_item">
 					{{item}}
 				</view>
 			</view>
@@ -108,7 +108,7 @@
 				type: String,
 				default: 'left'
 			},
-			view_height: {
+			viewHeight: {
 				type: Number,
 				default: 200
 			},
@@ -140,11 +140,12 @@
 				query2.select('.broadcastDataTopBtmDatacss_' + this.direction).boundingClientRect(rect => {
 					that.broadcastTopBtmHeight = rect.height;
 					
-					if(that.view_height-rect.height>10){
+					if(that.viewHeight-rect.height>10){
 						that.qualifications=false;
 						that.animation_paused = true;
+						that.broadcastDataTopBtmDataes.splice(that.broadcastDataTopBtmDataes.length/2,that.broadcastDataTopBtmDataes.length-1);
 					}
-					// console.log(rect.height, 'that.surplusHeight')
+					
 				}).exec()
 			}
 			if (this.direction == "left" || this.direction == "right") {
@@ -209,16 +210,21 @@
 				this.broadcastDataes = ititdata;
 				this.broadcastStylees = assist;
 			},
+			click_event(index){
+				this.$emit("changeEvent",{index,msg:`你点击了${index+1}条`});
+			}
 
 		}
 	}
 </script>
 
 <style>
-	page {
+	
+	/* app端有可能要加上 */
+	/* page {
 		overflow: hidden;
 		width: 100%;
-	}
+	} */
 
 	.marquee_box {
 		width: 100%;

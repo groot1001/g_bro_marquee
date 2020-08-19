@@ -1,6 +1,6 @@
 {
     "name" : "g_bro_marquee",
-    "appid" : "__UNI__48F58F0",
+    "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -57,7 +57,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "touristappid",
+        "appid" : "",
         "setting" : {
             "urlCheck" : false
         },
